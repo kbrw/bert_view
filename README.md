@@ -21,23 +21,19 @@ The extension workflow is the following :
         conditions: [new wr.RequestMatcher({resourceType: ['main_frame'],contentType: ["application/x-erlang-binary64"]})],
         actions:    [new wr.RemoveResponseHeader({name:"content-type"}),
                      new wr.AddResponseHeader({name:"content-type",value:"text/plain"}),
-                     new wr.SendMessageToExtension({message:"isbert64"})]
+                     new wr.AddResponseCookie({cookie: {name:"customview",value:"bert"}})]
     }]);
-    wr.onMessage.addListener(function(detail){
-        if(detail.message=="isbert64") chrome.tabs.executeScript(detail.tabId, {file: "content.js"});
-    });
     chrome.runtime.onMessage.addListener(function(msg,sender) {
         if(msg.bertdata) chrome.tabs.sendMessage(sender.tab.id,{bertToHtml: convertBert(msg.bertdata)});
     });
 
 So :
 * the *Background script*  use the `declarativeWebRequest` API to
-  send itself a message `isbert64` when a request match the content-type header
-* the *Background script* listen the `isbert64` message to load the
-  content script *content.js* on the tab that have executed the request.
-* the *Content script* send an Ajax request to retreive the raw
-  request, when done, it sends to the *background script* a message
-  with the base64 decoded message : `msg.bertdata`
+  add a cookie `customview` when a request match the content-type header
+* the *Content script* observes its cookie to see if it is a customview, 
+  and send an Ajax request to retreive the raw request accordingly. 
+* When done, it asks to the *background script* to transform this
+  data sending it a message with the base64 decoded message : `msg.bertdata`
 * The *Background script* process the data to convert it into
   beautiful HTML (`convertBert`), then sends to the *content script* a message with
   the processed HTML.

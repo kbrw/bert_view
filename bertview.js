@@ -3,11 +3,8 @@ wr.onRequest.addRules([{
     conditions: [new wr.RequestMatcher({resourceType: ['main_frame'],contentType: ["application/x-erlang-binary64"]})],
     actions:    [new wr.RemoveResponseHeader({name:"content-type"}),
                  new wr.AddResponseHeader({name:"content-type",value:"text/plain"}),
-                 new wr.SendMessageToExtension({message:"isbert64"})]
+                 new wr.AddResponseCookie({cookie: {name:"customview",value:"bert"}})]
 }]);
-wr.onMessage.addListener(function(detail){
-    if(detail.message=="isbert64") chrome.tabs.executeScript(detail.tabId, {file: "content.js"});
-});
 chrome.runtime.onMessage.addListener(function(msg,sender) {
     if(msg.bertdata) chrome.tabs.sendMessage(sender.tab.id,{bertToHtml: convertBert(msg.bertdata)});
 });

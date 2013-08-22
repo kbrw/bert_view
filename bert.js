@@ -519,7 +519,6 @@ BertClass.prototype.simpleterm = function(term) {
 };
 
 BertClass.prototype.easy_decode = function(binary) {
-  console.log(this.decode(binary));
   return this.simpleterm(this.decode(binary));
 };
 

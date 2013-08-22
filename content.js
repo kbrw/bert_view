@@ -30,23 +30,25 @@ function addCollapser(item) {
   item.insertBefore(collapser, item.firstChild);
 }
 
-/// get raw bert64 from XMLHttpRequest, ask background to parse
-xhr = new XMLHttpRequest();
-xhr.onreadystatechange = function() {
-	if (this.readyState == 4) {
-      chrome.runtime.sendMessage({bertdata: atob(this.responseText)});
-	}
-};
-xhr.open("GET", document.location.href, true);
-xhr.send();
-
-// write parsed html to document
-chrome.runtime.onMessage.addListener(function(msg) {
-    if(msg.bertToHtml){
-        document.documentElement.innerHTML = msg.bertToHtml;
-        var items = document.getElementsByClassName('collapsible');
-        for( var i = 0; i < items.length; i++) {
-          addCollapser(items[i].parentNode);
+if(document.cookie.indexOf("customview=bert") != -1){
+    /// get raw bert64 from XMLHttpRequest, ask background to parse
+    xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+    	if (this.readyState == 4) {
+          chrome.runtime.sendMessage({bertdata: atob(this.responseText)});
+    	}
+    };
+    xhr.open("GET", document.location.href, true);
+    xhr.send();
+    
+    // write parsed html to document
+    chrome.runtime.onMessage.addListener(function(msg) {
+        if(msg.bertToHtml){
+            document.documentElement.innerHTML = msg.bertToHtml;
+            var items = document.getElementsByClassName('collapsible');
+            for( var i = 0; i < items.length; i++) {
+              addCollapser(items[i].parentNode);
+            }
         }
-    }
-});
+    });
+}
