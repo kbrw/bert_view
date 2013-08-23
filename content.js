@@ -29,15 +29,22 @@ function addCollapser(item) {
   collapser.addEventListener('click', collapse, false);
   item.insertBefore(collapser, item.firstChild);
 }
-
-if(document.cookie.indexOf("customview=bert") != -1){
+if(document.cookie.indexOf("customview") != -1){
     /// get raw bert64 from XMLHttpRequest, ask background to parse
     xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-    	if (this.readyState == 4) {
-          chrome.runtime.sendMessage({bertdata: atob(this.responseText)});
-    	}
-    };
+    if(document.cookie.indexOf("customview=bert64") != -1){
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4) chrome.runtime.sendMessage({bertdata: atob(this.responseText)});;
+        };
+    }else if (document.cookie.indexOf("customview=bert") != -1){
+        xhr.responseType = 'arraybuffer';
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4){
+                var bytearray = new Uint8Array(this.response);
+                chrome.runtime.sendMessage({bertdata: String.fromCharCode.apply(null,bytearray)});
+            }
+        };
+    }
     xhr.open("GET", document.location.href, true);
     xhr.send();
     
