@@ -3,15 +3,12 @@ wr.onRequest.addRules([{
     conditions: [new wr.RequestMatcher({resourceType: ['main_frame'],contentType: ["application/x-erlang-binary64"]})],
     actions:    [new wr.RemoveResponseHeader({name:"content-type"}),
                  new wr.AddResponseHeader({name:"content-type",value:"text/plain"}),
-                 new wr.AddResponseCookie({cookie: {name:"customview",value:"bert64"}})]
+                 new wr.AddResponseCookie({cookie: {name:"customview",value:"bert64",maxAge: 1}})]
 },{
     conditions: [new wr.RequestMatcher({resourceType: ['main_frame'],contentType: ["application/x-erlang-binary"]})],
     actions:    [new wr.RemoveResponseHeader({name:"content-type"}),
                  new wr.AddResponseHeader({name:"content-type",value:"image/png"}),
-                 new wr.AddResponseCookie({cookie: {name:"customview",value:"bert"}})]
-},{
-    conditions: [new wr.RequestMatcher({resourceType: ['main_frame'],excludeContentType: ["application/x-erlang-binary","application/x-erlang-binary64"]})],
-    actions:    [new wr.RemoveResponseCookie({filter: {name:"customview"}})]
+                 new wr.AddResponseCookie({cookie: {name:"customview",value:"bert",maxAge: 1}})]
 }]);
 chrome.runtime.onMessage.addListener(function(msg,sender) {
     if(msg.bertdata) chrome.tabs.sendMessage(sender.tab.id,{bertToHtml: convertBert(msg.bertdata)});
