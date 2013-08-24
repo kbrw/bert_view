@@ -15,5 +15,6 @@
    "description": "Pretty-prints BERT data in the browser.",
    "name": "BERTView",
    "version": "0.3",
+   "minimum_chrome_version": "30.0",
    "web_accessible_resources": [ "default.css" ]
 }
