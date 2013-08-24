@@ -9,6 +9,9 @@ wr.onRequest.addRules([{
     actions:    [new wr.RemoveResponseHeader({name:"content-type"}),
                  new wr.AddResponseHeader({name:"content-type",value:"image/png"}),
                  new wr.AddResponseCookie({cookie: {name:"customview",value:"bert",maxAge: 1}})]
+},{
+    conditions: [new wr.RequestMatcher({resourceType: ['main_frame'],excludeContentType: ["application/x-erlang-binary","application/x-erlang-binary64"]})],
+    actions:    [new wr.RemoveResponseCookie({filter: {name:"customview"}})]
 }]);
 chrome.runtime.onMessage.addListener(function(msg,sender) {
     if(msg.bertdata) chrome.tabs.sendMessage(sender.tab.id,{bertToHtml: convertBert(msg.bertdata)});
